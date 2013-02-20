@@ -64,9 +64,12 @@ static void     tester (const std::string &teststr, const std::string &message) 
 }
 
 int     main (int argc, char **argv) {
-    tester (std::string (), "In this example the data string is the empty string, i.e. the string of length zero.") ;
-    tester ("a", "In this example the data string consists of a single byte, namely the ASCII-coded version of the letter 'a'.") ;
-    tester ("abc", "In this example the data string is the 3-byte string consisting of the ASCII-coded version of 'abc'.") ;
+    tester (std::string (),
+	    "In this example the data string is the empty string, i.e. the string of length zero.") ;
+    tester ("a",
+	    "In this example the data string consists of a single byte, namely the ASCII-coded version of the letter 'a'.") ;
+    tester ("abc",
+	    "In this example the data string is the 3-byte string consisting of the ASCII-coded version of 'abc'.") ;
     tester ("message digest",
             "In this example the data-string is the 14-byte string consisting of the ASCII-coded version of 'message digest'.") ;
     tester ("abcdefghijklmnopqrstuvwxyz",

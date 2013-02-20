@@ -304,8 +304,9 @@ namespace Whirlpool {
                 Flush () ;
             }
             uint8_t *	q = &buffer_ [sizeof (buffer_) - remain_] ;
-            *q++ = 0x80 ;
-            --remain_ ;
+	    assert (static_cast<size_t> (&buffer_ [sizeof (buffer_)] - q) == remain_) ;
+	    *q++ = 0x80 ;
+	    --remain_ ;
             ::memset (q, 0, remain_) ;
             if (remain_ < sizeof (bitCount_)) {
                 Flush () ;
