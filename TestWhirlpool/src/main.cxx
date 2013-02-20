@@ -7,7 +7,7 @@
  */
 
 #include "common.h"
-#include "../libwhirlpool/whirlpool.h"
+#include <whirlpool.h>
 
 namespace {
 

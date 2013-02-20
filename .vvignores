@@ -1,5 +1,9 @@
 build/
 ipch/
+*.vpj
+*.vpw
+*.vpwhist
+*.vtg
 *.suo
 *.sdf
 *.opensdf

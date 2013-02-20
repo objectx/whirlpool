@@ -18,9 +18,10 @@
 #endif
 
 #include <sys/types.h>
-#include <cassert>
+#include <assert.h>
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 #endif  /* common_h__280f1ce8_a4b7_4420_b827_c6b9c4f563d8 */
 /*
