@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Whirlpool", "Whirlpool\Whirlpool.vcxproj", "{9F41AF87-58A2-4EDD-AC11-D9E955A3514B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestWhirlpool", "TestWhirlpool\TestWhirlpool.vcxproj", "{BC72D055-7FB1-43E3-814A-97080148E2AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F41AF87-58A2-4EDD-AC11-D9E955A3514B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F41AF87-58A2-4EDD-AC11-D9E955A3514B}.Debug|Win32.Build.0 = Debug|Win32
+		{9F41AF87-58A2-4EDD-AC11-D9E955A3514B}.Release|Win32.ActiveCfg = Release|Win32
+		{9F41AF87-58A2-4EDD-AC11-D9E955A3514B}.Release|Win32.Build.0 = Release|Win32
+		{BC72D055-7FB1-43E3-814A-97080148E2AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BC72D055-7FB1-43E3-814A-97080148E2AB}.Debug|Win32.Build.0 = Debug|Win32
+		{BC72D055-7FB1-43E3-814A-97080148E2AB}.Release|Win32.ActiveCfg = Release|Win32
+		{BC72D055-7FB1-43E3-814A-97080148E2AB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
