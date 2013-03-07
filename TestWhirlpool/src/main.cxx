@@ -3,7 +3,6 @@
  *
  * Author(s): objectx
  *
- * $Id$
  */
 
 #include "common.h"
@@ -83,9 +82,3 @@ int     main (int argc, char **argv) {
     tester (std::string (1000000, 'a'), "In this example the data-string is the 1000000-byte string consisting of the ASCII-coded version of 'a' repeated 10^6 times.") ;
     return 0 ;
 }
-
-/*
- * $LastChangedRevision$
- * $LastChangedBy$
- * $HeadURL$
- */
