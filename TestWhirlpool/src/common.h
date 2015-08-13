@@ -22,6 +22,9 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cctype>
+#include <algorithm>
+#include <iterator>
 
 #endif  /* common_h__280f1ce8_a4b7_4420_b827_c6b9c4f563d8 */
 /*
