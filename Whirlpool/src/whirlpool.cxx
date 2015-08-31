@@ -119,7 +119,7 @@ namespace Whirlpool {
 
     Generator & Generator::Update (unsigned char value) {
         if (finalized_) {
-	    NOTIFY_ERROR ("Already finalized.") ;
+	        NOTIFY_ERROR ("Already finalized.") ;
         }
         if (remain_ <= 0) {
             Flush () ;
@@ -132,7 +132,7 @@ namespace Whirlpool {
     }
     Generator & Generator::Update (const void *data, size_t size) {
         if (finalized_) {
-	    NOTIFY_ERROR ("Already finalized.") ;
+	        NOTIFY_ERROR ("Already finalized.") ;
         }
         const uint8_t *	p = static_cast<const uint8_t *> (data) ;
         const uint8_t *	p_end = p + size ;
@@ -304,9 +304,9 @@ namespace Whirlpool {
                 Flush () ;
             }
             uint8_t *	q = &buffer_ [sizeof (buffer_) - remain_] ;
-	    assert (static_cast<size_t> (&buffer_ [sizeof (buffer_)] - q) == remain_) ;
-	    *q++ = 0x80 ;
-	    --remain_ ;
+	        assert (static_cast<size_t> (&buffer_ [sizeof (buffer_)] - q) == remain_) ;
+	        *q++ = 0x80 ;
+	        --remain_ ;
             ::memset (q, 0, remain_) ;
             if (remain_ < sizeof (bitCount_)) {
                 Flush () ;

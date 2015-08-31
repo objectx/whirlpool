@@ -58,65 +58,65 @@ namespace Whirlpool {
         uint64_t	digest_ [8] ;
         bool		finalized_ ;
         int32_t		remain_ ;
-	uint8_t		buffer_ [64] ;
+	    uint8_t		buffer_ [64] ;
         uint64_t	bitCount_ [4] ; // 256bits counter.
     public:
-	/** The default constructor.  */
-	Generator () ;
-	/**
-	 * The copy constructor.
-	 *
-	 * @param src    The source to copy
-	 */
+        /** The default constructor.  */
+        Generator () ;
+        /**
+         * The copy constructor.
+         *
+         * @param src    The source to copy
+         */
         Generator (const Generator &src) ;
-	/**
-	 * Assigns SRC's state to self.
-	 *
-	 * @param src    The source to assign
-	 *
-	 * @return *this
-	 */
+        /**
+         * Assigns SRC's state to self.
+         *
+         * @param src    The source to assign
+         *
+         * @return *this
+         */
         Generator &     Assign (const Generator &src) ;
         Generator &     operator = (const Generator &src) {
             return Assign (src) ;
         }
-	/**
-	 * Clears internal state.
-	 *
-	 * @return *this
-	 */
-	Generator &     Clear () ;
-	/**
-	 * Updates state with VALUE (1 byte).
-	 *
-	 * @param value Value to examine
-	 *
-	 * @return *this
-	 */
-	Generator &     Update (unsigned char value) ;
-	/**
-	 * Updates state with the sequence of DATA [0..SIZE - 1].
-	 *
-	 * @param data Start of the input
-	 * @param size # of bytes for input
-	 *
-	 * @return *this
-	 */
-	Generator &     Update (const void *data, size_t size) ;
-	/**
-	 * Finalizes internal state and computes digest.
-	 *
-	 * @return Computed digest
-	 */
-	Digest  Finalize () ;
+        /**
+         * Clears internal state.
+         *
+         * @return *this
+         */
+        Generator &     Clear () ;
+        /**
+         * Updates state with VALUE (1 byte).
+         *
+         * @param value Value to examine
+         *
+         * @return *this
+         */
+        Generator &     Update (unsigned char value) ;
+        /**
+         * Updates state with the sequence of DATA [0..SIZE - 1].
+         *
+         * @param data Start of the input
+         * @param size # of bytes for input
+         *
+         * @return *this
+         */
+        Generator &     Update (const void *data, size_t size) ;
+        /**
+         * Finalizes internal state and computes digest.
+         *
+         * @return Computed digest
+         */
+        Digest  Finalize () ;
     private:
         void    Flush () ;
-	/**
-	 * Increments bitCount_ by VALUE.
-	 *
-	 * @param value  Value for increment
-	 */
-	void    AddBitCount (uint64_t value) ;
+        /**
+         * Increments bitCount_ by VALUE.
+         *
+         * @param value  Value for increment
+         */
+        void    AddBitCount (uint64_t value) ;
         void    EmbedBitCount () ;
     } ;
 
