@@ -3,12 +3,9 @@
  *
  * Author(s): objectx
  */
+#pragma once
 #ifndef whirlpool_h__b4f60d2740a89d8c991cdeae0be6465d
 #define	whirlpool_h__b4f60d2740a89d8c991cdeae0be6465d	1
-
-#if defined (_MSC_VER) && (1300 <= _MSC_VER)
-#pragma once
-#endif
 
 #include <sys/types.h>
 #include <stdint.h>
