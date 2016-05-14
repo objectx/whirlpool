@@ -5,7 +5,7 @@
  *
  */
 
-#include "common.h"
+#include "common.hpp"
 #include <whirlpool.hpp>
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
