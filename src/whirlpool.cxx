@@ -5,7 +5,7 @@
  */
 #include <assert.h>
 #include <stdexcept>
-#include "whirlpool.h"
+#include "whirlpool.hpp"
 
 #include "whirlpool.inc"
 
