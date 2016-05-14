@@ -4,8 +4,8 @@
  * Author(s): objectx
  */
 #pragma once
-#ifndef whirlpool_h__b4f60d2740a89d8c991cdeae0be6465d
-#define	whirlpool_h__b4f60d2740a89d8c991cdeae0be6465d	1
+#ifndef whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d
+#define	whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d	1
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -157,7 +157,7 @@ inline int_fast32_t	operator >= (const Whirlpool::Digest &a, const Whirlpool::Di
     return Whirlpool::Digest::Compare (a, b) >= 0 ;
 }
 
-#endif  /* whirlpool_h__b4f60d2740a89d8c991cdeae0be6465d */
+#endif  /* whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d */
 /*
  * [END OF FILE]
  */

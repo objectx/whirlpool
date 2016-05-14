@@ -1,7 +1,9 @@
 
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.5)
 
-project (WHIRLPOOL LANGUAGES CXX)
+project (WHIRLPOOL
+         VERSION 1.0.0
+         LANGUAGES CXX)
 
 function (setvar_default var_)
     if (NOT DEFINED ${var_})
@@ -17,5 +19,5 @@ setvar_default (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 enable_testing ()
 
-add_subdirectory (Whirlpool)
-add_subdirectory (TestWhirlpool)
+add_subdirectory (src)
+add_subdirectory (test)
