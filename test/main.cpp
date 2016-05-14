@@ -11,7 +11,7 @@
 #include <catch.hpp>
 
 namespace {
-    std::ostream &      operator << (std::ostream &output, const Whirlpool::Digest &digest) {
+    std::ostream &      operator << (std::ostream &output, const Whirlpool::digest_t &digest) {
         const std::ios::fmtflags        mask = std::ios::basefield | std::ios::uppercase ;
         std::ios::fmtflags      f = output.setf (std::ios::hex | std::ios::uppercase, mask) ;
         char    fill = output.fill ('0') ;

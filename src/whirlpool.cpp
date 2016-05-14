@@ -1,7 +1,7 @@
 /*
  * whirlpool.cxx:
  *
- * Author(s): objectx
+ * Copyright (c) Masashi Fujita
  */
 #include <assert.h>
 #include <stdexcept>
@@ -9,118 +9,45 @@
 
 #include "whirlpool.inc"
 
-#define ARRAY_SIZE(X_)  (sizeof (X_) / sizeof (*(X_)))
-
 /** Non-zero means using full-size (x8 in size) table for computation.  */
 #define WHIRLPOOL_USE_FULL_TABLE        0
-
-/** Non-zero enables runtime exception to notifiy errors.  */
-#define    USE_EXCEPTION    0
-
-#if defined (USE_EXCEPTION) && (USE_EXCEPTION != 0)
-#   define NOTIFY_ERROR(MSG_)	do { std::runtime_error (MSG_) ; } while (0)
-#else
-#   define NOTIFY_ERROR(MSG_)    do { assert (false) ; } while (0)
-#endif
 
 static const size_t MAX_ROUND = 10;
 
 namespace Whirlpool {
-
-    Digest::Digest (const Digest &src) {
-        ::memcpy (digest_, src.digest_, sizeof (digest_));
-    }
-
-    Digest::Digest (const uint64_t *digest) {
-        for (size_t i = 0; i < (sizeof (digest_) / 8); ++i) {
-            uint64_t tmp = digest[i];
-            digest_[8 * i + 0] = static_cast<unsigned char> (tmp >> 56);
-            digest_[8 * i + 1] = static_cast<unsigned char> (tmp >> 48);
-            digest_[8 * i + 2] = static_cast<unsigned char> (tmp >> 40);
-            digest_[8 * i + 3] = static_cast<unsigned char> (tmp >> 32);
-            digest_[8 * i + 4] = static_cast<unsigned char> (tmp >> 24);
-            digest_[8 * i + 5] = static_cast<unsigned char> (tmp >> 16);
-            digest_[8 * i + 6] = static_cast<unsigned char> (tmp >>  8);
-            digest_[8 * i + 7] = static_cast<unsigned char> (tmp >>  0);
-        }
-    }
-
-    uint_fast64_t    Digest::Hash () const {
-        uint_fast64_t result = 0;
-
-        for (size_t i = 0; i < sizeof (digest_); i += 8) {
-            uint_fast64_t tmp = (  (static_cast<uint64_t>(digest_ [i + 0]) << 56)
-                                 | (static_cast<uint64_t>(digest_ [i + 1]) << 48)
-                                 | (static_cast<uint64_t>(digest_ [i + 2]) << 40)
-                                 | (static_cast<uint64_t>(digest_ [i + 3]) << 32)
-                                 | (static_cast<uint64_t>(digest_ [i + 4]) << 24)
-                                 | (static_cast<uint64_t>(digest_ [i + 5]) << 16)
-                                 | (static_cast<uint64_t>(digest_ [i + 6]) <<  8)
-                                 | (static_cast<uint64_t>(digest_ [i + 7]) <<  0));
-            result ^= tmp;
-        }
-        return result;
-    }
-
-    Digest &Digest::Assign (const Digest &src) {
-        ::memcpy (digest_, src.digest_, sizeof (digest_));
-        return *this;
-    }
-
-    bool        Digest::IsEqual (const Digest &a, const Digest &b) {
-        for (size_t i = 0; i < sizeof (a.digest_); ++i) {
-            if (a.digest_[i] != b.digest_[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    bool        Digest::IsNotEqual (const Digest &a, const Digest &b) {
-        for (size_t i = 0; i < sizeof (a.digest_); ++i) {
-            if (a.digest_[i] != b.digest_[i]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    int_fast32_t    Digest::Compare (const Digest &a, const Digest &b) {
-        return ::memcmp (a.digest_, b.digest_, sizeof (a.digest_));
-    }
 
     Generator::Generator () {
         Clear ();
     }
 
     Generator::Generator (const Generator &src)
-            : finalized_ (src.finalized_)
-            , remain_ (src.remain_) {
-        ::memcpy (digest_, src.digest_, sizeof (digest_));
-        ::memcpy (buffer_, src.buffer_, sizeof (buffer_));
-        ::memcpy (bitCount_, src.bitCount_, sizeof (bitCount_));
+            : finalized_ { src.finalized_ }
+            , remain_ { src.remain_ } {
+        digest_.fill (0) ;
+        buffer_.fill (0) ;
+        bitCount_.fill (0) ;
     }
 
     Generator &Generator::Assign (const Generator &src) {
         finalized_ = src.finalized_;
         remain_    = src.remain_;
-        ::memcpy (digest_, src.digest_, sizeof (digest_));
-        ::memcpy (buffer_, src.buffer_, sizeof (buffer_));
-        ::memcpy (bitCount_, src.bitCount_, sizeof (bitCount_));
+        digest_ = src.digest_ ;
+        buffer_ = src.buffer_ ;
+        bitCount_ = src.bitCount_ ;
         return *this;
     }
 
     Generator &Generator::Clear () {
         finalized_ = false;
         remain_    = sizeof (buffer_);
-        ::memset (digest_, 0, sizeof (digest_));
-        ::memset (bitCount_, 0, sizeof (bitCount_));
+        digest_.fill (0) ;
+        bitCount_.fill (0) ;
         return *this;
     }
 
     Generator &Generator::Update (unsigned char value) {
         if (finalized_) {
-            NOTIFY_ERROR ("Already finalized.");
+            throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
         }
         if (remain_ <= 0) {
             Flush ();
@@ -134,7 +61,7 @@ namespace Whirlpool {
 
     Generator &Generator::Update (const void *data, size_t size) {
         if (finalized_) {
-            NOTIFY_ERROR ("Already finalized.");
+            throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
         }
         const uint8_t *p     = static_cast<const uint8_t *> (data);
         const uint8_t *p_end = p + size;
@@ -291,7 +218,7 @@ namespace Whirlpool {
         uint_fast64_t x = bitCount_[0];
         bitCount_[0] += value;
         if (bitCount_[0] < x) {
-            for (size_t i = 1; i < ARRAY_SIZE (bitCount_); ++i) {
+            for (size_t i = 1; i < bitCount_.size () ; ++i) {
                 x = bitCount_[i];
                 bitCount_[i] += 1;
                 if (x < bitCount_[i]) {
@@ -301,7 +228,7 @@ namespace Whirlpool {
         }
     }
 
-    Digest      Generator::Finalize () {
+    digest_t    Generator::Finalize () {
         if (!finalized_) {
             if (remain_ <= 0) {
                 Flush ();
@@ -313,19 +240,31 @@ namespace Whirlpool {
             ::memset (q, 0, remain_);
             if (remain_ < sizeof (bitCount_)) {
                 Flush ();
-                ::memset (buffer_, 0, sizeof (buffer_));
+                buffer_.fill (0) ;
             }
             EmbedBitCount ();
             Flush ();
             finalized_ = true;
         }
-        return Digest (digest_);
+        digest_t    result ;
+        for (int_fast32_t i = 0 ; i < 8 ; ++i) {
+            auto v = digest_ [i] ;
+            result [8 * i + 0] = static_cast<uint8_t> (v >> 56) ;
+            result [8 * i + 1] = static_cast<uint8_t> (v >> 48) ;
+            result [8 * i + 2] = static_cast<uint8_t> (v >> 40) ;
+            result [8 * i + 3] = static_cast<uint8_t> (v >> 32) ;
+            result [8 * i + 4] = static_cast<uint8_t> (v >> 24) ;
+            result [8 * i + 5] = static_cast<uint8_t> (v >> 16) ;
+            result [8 * i + 6] = static_cast<uint8_t> (v >>  8) ;
+            result [8 * i + 7] = static_cast<uint8_t> (v >>  0) ;
+        }
+        return result ;
     }
 
     void        Generator::EmbedBitCount () {
         assert (sizeof (bitCount_) <= remain_);
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
-        for (int_fast32_t i = ARRAY_SIZE (bitCount_) - 1; 0 <= i; --i) {
+        for (int_fast32_t i = bitCount_.size () - 1; 0 <= i; --i) {
             uint_fast64_t v = bitCount_[i];
             p[0] = static_cast<unsigned char> (v >> 56);
             p[1] = static_cast<unsigned char> (v >> 48);
