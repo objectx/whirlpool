@@ -25,13 +25,23 @@ namespace Whirlpool {
         std::array<uint64_t, 4> bitCount_ ; // 256bits counter.
     public:
         /** The default constructor.  */
-        Generator () ;
+        Generator () {
+            Clear () ;
+        }
+
         /**
          * The copy constructor.
          *
          * @param src    The source to copy
          */
-        Generator (const Generator &src) ;
+        Generator (const Generator &src)
+                : finalized_ { src.finalized_ }
+                , remain_    { src.remain_ } {
+            digest_.fill (0) ;
+            buffer_.fill (0) ;
+            bitCount_.fill (0) ;
+        }
+
         /**
          * Assigns SRC's state to self.
          *
@@ -39,16 +49,32 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator &     Assign (const Generator &src) ;
+        Generator & Assign (const Generator &src) {
+            finalized_ = src.finalized_;
+            remain_    = src.remain_;
+            digest_    = src.digest_;
+            buffer_    = src.buffer_;
+            bitCount_  = src.bitCount_;
+            return *this;
+        }
+
         Generator &     operator = (const Generator &src) {
             return Assign (src) ;
         }
+
         /**
          * Clears internal state.
          *
          * @return *this
          */
-        Generator &     Clear () ;
+        Generator &     Clear () {
+            finalized_ = false;
+            remain_    = sizeof (buffer_);
+            digest_.fill (0);
+            bitCount_.fill (0);
+            return *this;
+        }
+
         /**
          * Updates state with VALUE (1 byte).
          *
@@ -57,6 +83,7 @@ namespace Whirlpool {
          * @return *this
          */
         Generator &     Update (unsigned char value) ;
+
         /**
          * Updates state with the sequence of DATA [0..SIZE - 1].
          *
@@ -66,6 +93,7 @@ namespace Whirlpool {
          * @return *this
          */
         Generator &     Update (const void *data, size_t size) ;
+
         /**
          * Finalizes internal state and computes digest.
          *
@@ -74,6 +102,7 @@ namespace Whirlpool {
         digest_t    Finalize () ;
     private:
         void    Flush () ;
+
         /**
          * Increments bitCount_ by VALUE.
          *
@@ -94,7 +123,6 @@ namespace Whirlpool {
     inline digest_t ComputeDigest (const void *data, size_t size) {
         return Generator ().Update (data, size).Finalize () ;
     }
-
 }       /* end of [namespace Whirlpool] */
 
 #endif  /* whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d */

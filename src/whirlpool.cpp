@@ -16,35 +16,6 @@ static const size_t MAX_ROUND = 10;
 
 namespace Whirlpool {
 
-    Generator::Generator () {
-        Clear ();
-    }
-
-    Generator::Generator (const Generator &src)
-            : finalized_ { src.finalized_ }
-            , remain_ { src.remain_ } {
-        digest_.fill (0) ;
-        buffer_.fill (0) ;
-        bitCount_.fill (0) ;
-    }
-
-    Generator &Generator::Assign (const Generator &src) {
-        finalized_ = src.finalized_;
-        remain_    = src.remain_;
-        digest_ = src.digest_ ;
-        buffer_ = src.buffer_ ;
-        bitCount_ = src.bitCount_ ;
-        return *this;
-    }
-
-    Generator &Generator::Clear () {
-        finalized_ = false;
-        remain_    = sizeof (buffer_);
-        digest_.fill (0) ;
-        bitCount_.fill (0) ;
-        return *this;
-    }
-
     Generator &Generator::Update (unsigned char value) {
         if (finalized_) {
             throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
@@ -66,12 +37,12 @@ namespace Whirlpool {
         const uint8_t *p     = static_cast<const uint8_t *> (data);
         const uint8_t *p_end = p + size;
 
-        uint8_t *   q = &buffer_[sizeof (buffer_) - remain_];
+        uint8_t *   q = &buffer_ [sizeof (buffer_) - remain_];
 
         while (p < p_end) {
             if (remain_ <= 0) {
                 Flush ();
-                q = &buffer_[0];
+                q = &buffer_ [0];
             }
             *q++ = *p++;
             --remain_;
@@ -95,7 +66,7 @@ namespace Whirlpool {
     }
 
     static inline uint64_t CIR (size_t n, uint64_t value) {
-        uint64_t result = CIR_[static_cast<int> (value) & 0xFF];
+        uint64_t result = CIR_ [static_cast<int> (value) & 0xFF];
         return RotateRight (result, 8 * n);
     }
 
@@ -103,43 +74,43 @@ namespace Whirlpool {
 
     static inline uint64_t ToUInt64 (const void *data) {
         const unsigned char *p = static_cast<const unsigned char *> (data);
-        return ((static_cast<uint64_t> (p[0]) << 56) |
-                (static_cast<uint64_t> (p[1]) << 48) |
-                (static_cast<uint64_t> (p[2]) << 40) |
-                (static_cast<uint64_t> (p[3]) << 32) |
-                (static_cast<uint64_t> (p[4]) << 24) |
-                (static_cast<uint64_t> (p[5]) << 16) |
-                (static_cast<uint64_t> (p[6]) <<  8) |
-                (static_cast<uint64_t> (p[7]) <<  0));
+        return ( (static_cast<uint64_t> (p [0]) << 56)
+               | (static_cast<uint64_t> (p [1]) << 48)
+               | (static_cast<uint64_t> (p [2]) << 40)
+               | (static_cast<uint64_t> (p [3]) << 32)
+               | (static_cast<uint64_t> (p [4]) << 24)
+               | (static_cast<uint64_t> (p [5]) << 16)
+               | (static_cast<uint64_t> (p [6]) <<  8)
+               | (static_cast<uint64_t> (p [7]) <<  0));
     }
 
     void        Generator::Flush () {
-        uint_fast64_t K0 = digest_[0];
-        uint_fast64_t K1 = digest_[1];
-        uint_fast64_t K2 = digest_[2];
-        uint_fast64_t K3 = digest_[3];
-        uint_fast64_t K4 = digest_[4];
-        uint_fast64_t K5 = digest_[5];
-        uint_fast64_t K6 = digest_[6];
-        uint_fast64_t K7 = digest_[7];
+        uint_fast64_t K0 = digest_ [0];
+        uint_fast64_t K1 = digest_ [1];
+        uint_fast64_t K2 = digest_ [2];
+        uint_fast64_t K3 = digest_ [3];
+        uint_fast64_t K4 = digest_ [4];
+        uint_fast64_t K5 = digest_ [5];
+        uint_fast64_t K6 = digest_ [6];
+        uint_fast64_t K7 = digest_ [7];
 
-        uint_fast64_t B0 = ToUInt64 (&buffer_[8 * 0]);
-        uint_fast64_t B1 = ToUInt64 (&buffer_[8 * 1]);
-        uint_fast64_t B2 = ToUInt64 (&buffer_[8 * 2]);
-        uint_fast64_t B3 = ToUInt64 (&buffer_[8 * 3]);
-        uint_fast64_t B4 = ToUInt64 (&buffer_[8 * 4]);
-        uint_fast64_t B5 = ToUInt64 (&buffer_[8 * 5]);
-        uint_fast64_t B6 = ToUInt64 (&buffer_[8 * 6]);
-        uint_fast64_t B7 = ToUInt64 (&buffer_[8 * 7]);
+        uint_fast64_t B0 = ToUInt64 (&buffer_ [8 * 0]);
+        uint_fast64_t B1 = ToUInt64 (&buffer_ [8 * 1]);
+        uint_fast64_t B2 = ToUInt64 (&buffer_ [8 * 2]);
+        uint_fast64_t B3 = ToUInt64 (&buffer_ [8 * 3]);
+        uint_fast64_t B4 = ToUInt64 (&buffer_ [8 * 4]);
+        uint_fast64_t B5 = ToUInt64 (&buffer_ [8 * 5]);
+        uint_fast64_t B6 = ToUInt64 (&buffer_ [8 * 6]);
+        uint_fast64_t B7 = ToUInt64 (&buffer_ [8 * 7]);
 
-        uint_fast64_t S0 = B0 ^K0;
-        uint_fast64_t S1 = B1 ^K1;
-        uint_fast64_t S2 = B2 ^K2;
-        uint_fast64_t S3 = B3 ^K3;
-        uint_fast64_t S4 = B4 ^K4;
-        uint_fast64_t S5 = B5 ^K5;
-        uint_fast64_t S6 = B6 ^K6;
-        uint_fast64_t S7 = B7 ^K7;
+        uint_fast64_t S0 = B0 ^ K0;
+        uint_fast64_t S1 = B1 ^ K1;
+        uint_fast64_t S2 = B2 ^ K2;
+        uint_fast64_t S3 = B3 ^ K3;
+        uint_fast64_t S4 = B4 ^ K4;
+        uint_fast64_t S5 = B5 ^ K5;
+        uint_fast64_t S6 = B6 ^ K6;
+        uint_fast64_t S7 = B7 ^ K7;
 
         for (size_t r = 1; r <= MAX_ROUND; ++r) {
             uint_fast64_t L0 = K0;
@@ -203,25 +174,25 @@ namespace Whirlpool {
                   CIR (4, L3 >> 24) ^ CIR (5, L2 >> 16) ^ CIR (6, L1 >>  8) ^ CIR (7, L0 >>  0) ^
                   K7);
         }
-        digest_[0] ^= S0 ^ B0;
-        digest_[1] ^= S1 ^ B1;
-        digest_[2] ^= S2 ^ B2;
-        digest_[3] ^= S3 ^ B3;
-        digest_[4] ^= S4 ^ B4;
-        digest_[5] ^= S5 ^ B5;
-        digest_[6] ^= S6 ^ B6;
-        digest_[7] ^= S7 ^ B7;
+        digest_ [0] ^= S0 ^ B0;
+        digest_ [1] ^= S1 ^ B1;
+        digest_ [2] ^= S2 ^ B2;
+        digest_ [3] ^= S3 ^ B3;
+        digest_ [4] ^= S4 ^ B4;
+        digest_ [5] ^= S5 ^ B5;
+        digest_ [6] ^= S6 ^ B6;
+        digest_ [7] ^= S7 ^ B7;
         remain_ = sizeof (buffer_);
     }
 
     void        Generator::AddBitCount (uint64_t value) {
-        uint_fast64_t x = bitCount_[0];
-        bitCount_[0] += value;
-        if (bitCount_[0] < x) {
+        uint_fast64_t x = bitCount_ [0];
+        bitCount_ [0] += value;
+        if (bitCount_ [0] < x) {
             for (size_t i = 1; i < bitCount_.size () ; ++i) {
-                x = bitCount_[i];
-                bitCount_[i] += 1;
-                if (x < bitCount_[i]) {
+                x = bitCount_ [i];
+                bitCount_ [i] += 1;
+                if (x < bitCount_ [i]) {
                     break;
                 }
             }
@@ -233,8 +204,8 @@ namespace Whirlpool {
             if (remain_ <= 0) {
                 Flush ();
             }
-            uint8_t *q = &buffer_[sizeof (buffer_) - remain_];
-            assert (static_cast<size_t> (&buffer_[sizeof (buffer_)] - q) == remain_);
+            uint8_t *q = &buffer_ [sizeof (buffer_) - remain_];
+            assert (static_cast<size_t> (&buffer_ [sizeof (buffer_)] - q) == remain_);
             *q++ = 0x80;
             --remain_;
             ::memset (q, 0, remain_);
@@ -266,18 +237,15 @@ namespace Whirlpool {
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
         for (int_fast32_t i = bitCount_.size () - 1; 0 <= i; --i) {
             uint_fast64_t v = bitCount_[i];
-            p[0] = static_cast<unsigned char> (v >> 56);
-            p[1] = static_cast<unsigned char> (v >> 48);
-            p[2] = static_cast<unsigned char> (v >> 40);
-            p[3] = static_cast<unsigned char> (v >> 32);
-            p[4] = static_cast<unsigned char> (v >> 24);
-            p[5] = static_cast<unsigned char> (v >> 16);
-            p[6] = static_cast<unsigned char> (v >>  8);
-            p[7] = static_cast<unsigned char> (v >>  0);
+            p [0] = static_cast<unsigned char> (v >> 56);
+            p [1] = static_cast<unsigned char> (v >> 48);
+            p [2] = static_cast<unsigned char> (v >> 40);
+            p [3] = static_cast<unsigned char> (v >> 32);
+            p [4] = static_cast<unsigned char> (v >> 24);
+            p [5] = static_cast<unsigned char> (v >> 16);
+            p [6] = static_cast<unsigned char> (v >>  8);
+            p [7] = static_cast<unsigned char> (v >>  0);
             p += 8;
         }
     }
 }       /* end of [namespace Whirlpool] */
-/*
- * [END OF FILE]
- */
