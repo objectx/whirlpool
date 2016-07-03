@@ -1,4 +1,5 @@
 /* --- DO NOT EDIT --- */
+#pragma once
 #include <stdint.h>
 static const uint64_t	RC_ [11] = {
     0x0000000000000000uLL, 0x1823C6E887B8014FuLL, 0x36A6D2F5796F9152uLL, 0x60BC9B8EA30C7B35uLL,

@@ -19,5 +19,7 @@ setvar_default (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 enable_testing ()
 
+include (FindPythonInterp)
+
 add_subdirectory (src)
 add_subdirectory (test)

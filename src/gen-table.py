@@ -104,6 +104,7 @@ def generate (output):
         return result
 
     tmpl = """/* --- DO NOT EDIT --- */
+#pragma once
 #include <stdint.h>
 static const uint64_t\tRC_ [11] = {
 ${rc_table}
