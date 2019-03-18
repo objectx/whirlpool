@@ -7,8 +7,8 @@
 #ifndef whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d
 #define	whirlpool_hpp__b4f60d2740a89d8c991cdeae0be6465d	1
 
-#include <sys/types.h>
-#include <stdint.h>
+#include <cctype>
+#include <cstdint>
 #include <array>
 
 namespace Whirlpool {

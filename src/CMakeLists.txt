@@ -1,8 +1,7 @@
 
-cmake_minimum_required (VERSION 3.5)
+cmake_minimum_required (VERSION 3.14)
 
-set (SOURCE_FILES whirlpool.cpp)
-set (HEADER_FILES ${WHIRLPOOL_SOURCE_DIR}/include/whirlpool.hpp whirlpool.inc)
+target_sources (${PROJECT_NAME} PRIVATE whirlpool.cpp ${CMAKE_CURRENT_SOURCE_DIR}/whirlpool.inc)
 
 if (${PYTHONINTERP_FOUND})
     add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/whirlpool.inc
@@ -12,7 +11,4 @@ if (${PYTHONINTERP_FOUND})
                         COMMENT Generate a Whirlpool constant table)
 endif ()
 
-add_library (whirlpool ${SOURCE_FILES} ${HEADER_FILES})
-    target_include_directories (whirlpool PUBLIC $<BUILD_INTERFACE:${WHIRLPOOL_SOURCE_DIR}/include>
-                                                 $<INSTALL_INTERFACE:include>)
-    target_compile_features (whirlpool PUBLIC cxx_auto_type cxx_alias_templates)
+target_compile_features (whirlpool PUBLIC cxx_std_14)

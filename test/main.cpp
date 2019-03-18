@@ -8,7 +8,7 @@
 #include "common.hpp"
 #include <whirlpool.hpp>
 #define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 namespace {
     std::ostream &      operator << (std::ostream &output, const Whirlpool::digest_t &digest) {
