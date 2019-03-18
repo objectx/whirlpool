@@ -5,6 +5,7 @@ project (WHIRLPOOL
          VERSION 1.0.0
          LANGUAGES CXX)
 
+list (INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_BINARY_DIR})
 function (setvar_default var_)
     if (NOT DEFINED ${var_})
         set (${var_} ${ARGN} PARENT_SCOPE)
