@@ -7,10 +7,10 @@
 #include <stdexcept>
 #include "whirlpool.hpp"
 
-#include "whirlpool.inc"
-
 /** Non-zero means using full-size (x8 in size) table for computation.  */
 #define WHIRLPOOL_USE_FULL_TABLE        0
+
+#include "whirlpool.inc"
 
 static const size_t MAX_ROUND = 10;
 
@@ -34,8 +34,8 @@ namespace Whirlpool {
         if (finalized_) {
             throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
         }
-        const uint8_t *p     = static_cast<const uint8_t *> (data);
-        const uint8_t *p_end = p + size;
+        auto p     = static_cast<const uint8_t *> (data);
+        auto p_end = p + size;
 
         uint8_t *   q = &buffer_ [sizeof (buffer_) - remain_];
 
@@ -74,14 +74,14 @@ namespace Whirlpool {
 
     static inline uint64_t ToUInt64 (const void *data) {
         const unsigned char *p = static_cast<const unsigned char *> (data);
-        return ( (static_cast<uint64_t> (p [0]) << 56)
-               | (static_cast<uint64_t> (p [1]) << 48)
-               | (static_cast<uint64_t> (p [2]) << 40)
-               | (static_cast<uint64_t> (p [3]) << 32)
-               | (static_cast<uint64_t> (p [4]) << 24)
-               | (static_cast<uint64_t> (p [5]) << 16)
-               | (static_cast<uint64_t> (p [6]) <<  8)
-               | (static_cast<uint64_t> (p [7]) <<  0));
+        return ( (static_cast<uint64_t> (p [0]) << 56u)
+               | (static_cast<uint64_t> (p [1]) << 48u)
+               | (static_cast<uint64_t> (p [2]) << 40u)
+               | (static_cast<uint64_t> (p [3]) << 32u)
+               | (static_cast<uint64_t> (p [4]) << 24u)
+               | (static_cast<uint64_t> (p [5]) << 16u)
+               | (static_cast<uint64_t> (p [6]) <<  8u)
+               | (static_cast<uint64_t> (p [7]) <<  0u));
     }
 
     void        Generator::Flush () {
@@ -149,29 +149,29 @@ namespace Whirlpool {
             L6 = S6;
             L7 = S7;
 
-            S0 = (CIR (0, L0 >> 56) ^ CIR (1, L7 >> 48) ^ CIR (2, L6 >> 40) ^ CIR (3, L5 >> 32) ^
-                  CIR (4, L4 >> 24) ^ CIR (5, L3 >> 16) ^ CIR (6, L2 >>  8) ^ CIR (7, L1 >>  0) ^
+            S0 = (CIR (0, L0 >> 56u) ^ CIR (1, L7 >> 48u) ^ CIR (2, L6 >> 40u) ^ CIR (3, L5 >> 32u) ^
+                  CIR (4, L4 >> 24u) ^ CIR (5, L3 >> 16u) ^ CIR (6, L2 >>  8u) ^ CIR (7, L1 >>  0u) ^
                   K0);
-            S1 = (CIR (0, L1 >> 56) ^ CIR (1, L0 >> 48) ^ CIR (2, L7 >> 40) ^ CIR (3, L6 >> 32) ^
-                  CIR (4, L5 >> 24) ^ CIR (5, L4 >> 16) ^ CIR (6, L3 >>  8) ^ CIR (7, L2 >>  0) ^
+            S1 = (CIR (0, L1 >> 56u) ^ CIR (1, L0 >> 48u) ^ CIR (2, L7 >> 40u) ^ CIR (3, L6 >> 32u) ^
+                  CIR (4, L5 >> 24u) ^ CIR (5, L4 >> 16u) ^ CIR (6, L3 >>  8u) ^ CIR (7, L2 >>  0u) ^
                   K1);
-            S2 = (CIR (0, L2 >> 56) ^ CIR (1, L1 >> 48) ^ CIR (2, L0 >> 40) ^ CIR (3, L7 >> 32) ^
-                  CIR (4, L6 >> 24) ^ CIR (5, L5 >> 16) ^ CIR (6, L4 >>  8) ^ CIR (7, L3 >>  0) ^
+            S2 = (CIR (0, L2 >> 56u) ^ CIR (1, L1 >> 48u) ^ CIR (2, L0 >> 40u) ^ CIR (3, L7 >> 32u) ^
+                  CIR (4, L6 >> 24u) ^ CIR (5, L5 >> 16u) ^ CIR (6, L4 >>  8u) ^ CIR (7, L3 >>  0u) ^
                   K2);
-            S3 = (CIR (0, L3 >> 56) ^ CIR (1, L2 >> 48) ^ CIR (2, L1 >> 40) ^ CIR (3, L0 >> 32) ^
-                  CIR (4, L7 >> 24) ^ CIR (5, L6 >> 16) ^ CIR (6, L5 >>  8) ^ CIR (7, L4 >>  0) ^
+            S3 = (CIR (0, L3 >> 56u) ^ CIR (1, L2 >> 48u) ^ CIR (2, L1 >> 40u) ^ CIR (3, L0 >> 32u) ^
+                  CIR (4, L7 >> 24u) ^ CIR (5, L6 >> 16u) ^ CIR (6, L5 >>  8u) ^ CIR (7, L4 >>  0u) ^
                   K3);
-            S4 = (CIR (0, L4 >> 56) ^ CIR (1, L3 >> 48) ^ CIR (2, L2 >> 40) ^ CIR (3, L1 >> 32) ^
-                  CIR (4, L0 >> 24) ^ CIR (5, L7 >> 16) ^ CIR (6, L6 >>  8) ^ CIR (7, L5 >>  0) ^
+            S4 = (CIR (0, L4 >> 56u) ^ CIR (1, L3 >> 48u) ^ CIR (2, L2 >> 40u) ^ CIR (3, L1 >> 32u) ^
+                  CIR (4, L0 >> 24u) ^ CIR (5, L7 >> 16u) ^ CIR (6, L6 >>  8u) ^ CIR (7, L5 >>  0u) ^
                   K4);
-            S5 = (CIR (0, L5 >> 56) ^ CIR (1, L4 >> 48) ^ CIR (2, L3 >> 40) ^ CIR (3, L2 >> 32) ^
-                  CIR (4, L1 >> 24) ^ CIR (5, L0 >> 16) ^ CIR (6, L7 >>  8) ^ CIR (7, L6 >>  0) ^
+            S5 = (CIR (0, L5 >> 56u) ^ CIR (1, L4 >> 48u) ^ CIR (2, L3 >> 40u) ^ CIR (3, L2 >> 32u) ^
+                  CIR (4, L1 >> 24u) ^ CIR (5, L0 >> 16u) ^ CIR (6, L7 >>  8u) ^ CIR (7, L6 >>  0u) ^
                   K5);
-            S6 = (CIR (0, L6 >> 56) ^ CIR (1, L5 >> 48) ^ CIR (2, L4 >> 40) ^ CIR (3, L3 >> 32) ^
-                  CIR (4, L2 >> 24) ^ CIR (5, L1 >> 16) ^ CIR (6, L0 >>  8) ^ CIR (7, L7 >>  0) ^
+            S6 = (CIR (0, L6 >> 56u) ^ CIR (1, L5 >> 48u) ^ CIR (2, L4 >> 40u) ^ CIR (3, L3 >> 32u) ^
+                  CIR (4, L2 >> 24u) ^ CIR (5, L1 >> 16u) ^ CIR (6, L0 >>  8u) ^ CIR (7, L7 >>  0u) ^
                   K6);
-            S7 = (CIR (0, L7 >> 56) ^ CIR (1, L6 >> 48) ^ CIR (2, L5 >> 40) ^ CIR (3, L4 >> 32) ^
-                  CIR (4, L3 >> 24) ^ CIR (5, L2 >> 16) ^ CIR (6, L1 >>  8) ^ CIR (7, L0 >>  0) ^
+            S7 = (CIR (0, L7 >> 56u) ^ CIR (1, L6 >> 48u) ^ CIR (2, L5 >> 40u) ^ CIR (3, L4 >> 32u) ^
+                  CIR (4, L3 >> 24u) ^ CIR (5, L2 >> 16u) ^ CIR (6, L1 >>  8u) ^ CIR (7, L0 >>  0u) ^
                   K7);
         }
         digest_ [0] ^= S0 ^ B0;
@@ -220,14 +220,14 @@ namespace Whirlpool {
         digest_t    result ;
         for (int_fast32_t i = 0 ; i < 8 ; ++i) {
             auto v = digest_ [i] ;
-            result [8 * i + 0] = static_cast<uint8_t> (v >> 56) ;
-            result [8 * i + 1] = static_cast<uint8_t> (v >> 48) ;
-            result [8 * i + 2] = static_cast<uint8_t> (v >> 40) ;
-            result [8 * i + 3] = static_cast<uint8_t> (v >> 32) ;
-            result [8 * i + 4] = static_cast<uint8_t> (v >> 24) ;
-            result [8 * i + 5] = static_cast<uint8_t> (v >> 16) ;
-            result [8 * i + 6] = static_cast<uint8_t> (v >>  8) ;
-            result [8 * i + 7] = static_cast<uint8_t> (v >>  0) ;
+            result [8 * i + 0] = static_cast<uint8_t> (v >> 56u) ;
+            result [8 * i + 1] = static_cast<uint8_t> (v >> 48u) ;
+            result [8 * i + 2] = static_cast<uint8_t> (v >> 40u) ;
+            result [8 * i + 3] = static_cast<uint8_t> (v >> 32u) ;
+            result [8 * i + 4] = static_cast<uint8_t> (v >> 24u) ;
+            result [8 * i + 5] = static_cast<uint8_t> (v >> 16u) ;
+            result [8 * i + 6] = static_cast<uint8_t> (v >>  8u) ;
+            result [8 * i + 7] = static_cast<uint8_t> (v >>  0u) ;
         }
         return result ;
     }
@@ -237,14 +237,14 @@ namespace Whirlpool {
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
         for (int_fast32_t i = bitCount_.size () - 1; 0 <= i; --i) {
             uint_fast64_t v = bitCount_[i];
-            p [0] = static_cast<unsigned char> (v >> 56);
-            p [1] = static_cast<unsigned char> (v >> 48);
-            p [2] = static_cast<unsigned char> (v >> 40);
-            p [3] = static_cast<unsigned char> (v >> 32);
-            p [4] = static_cast<unsigned char> (v >> 24);
-            p [5] = static_cast<unsigned char> (v >> 16);
-            p [6] = static_cast<unsigned char> (v >>  8);
-            p [7] = static_cast<unsigned char> (v >>  0);
+            p [0] = static_cast<unsigned char> (v >> 56u);
+            p [1] = static_cast<unsigned char> (v >> 48u);
+            p [2] = static_cast<unsigned char> (v >> 40u);
+            p [3] = static_cast<unsigned char> (v >> 32u);
+            p [4] = static_cast<unsigned char> (v >> 24u);
+            p [5] = static_cast<unsigned char> (v >> 16u);
+            p [6] = static_cast<unsigned char> (v >>  8u);
+            p [7] = static_cast<unsigned char> (v >>  0u);
             p += 8;
         }
     }

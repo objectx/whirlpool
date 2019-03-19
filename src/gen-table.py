@@ -23,7 +23,7 @@ def main ():
     (options, args) = p.parse_args ()
     output = sys.stdout
     if 0 < len (args):
-        output = open (args [0], "wb")
+        output = open (args [0], "w", newline = '\n')
     try:
         generate (output)
     except:

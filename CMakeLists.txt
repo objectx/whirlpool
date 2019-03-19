@@ -19,11 +19,11 @@ setvar_default (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 enable_testing ()
 
-include (FindPythonInterp)
+include (cotire OPTIONAL)
 
 add_library (${PROJECT_NAME} STATIC)
 target_include_directories (${PROJECT_NAME}
-                            PUBLIC $<BUILD_INTERFACE:${WHIRLPOOL_SOURCE_DIR}/include>
+                            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
                                    $<INSTALL_INTERFACE:include>)
 
 add_subdirectory (src)
