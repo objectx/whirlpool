@@ -188,7 +188,7 @@ namespace Whirlpool {
                 Flush ();
             }
             uint8_t *q = &buffer_ [sizeof (buffer_) - remain_];
-            assert (static_cast<size_t> (&buffer_ [sizeof (buffer_)] - q) == remain_);
+            assert (static_cast<size_t> (buffer_.data() + sizeof (buffer_) - q) == remain_);
             *q++ = 0x80;
             --remain_;
             ::memset (q, 0, remain_);
