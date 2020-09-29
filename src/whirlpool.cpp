@@ -235,7 +235,7 @@ namespace Whirlpool {
     void        Generator::EmbedBitCount () {
         assert (sizeof (bitCount_) <= remain_);
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
-        for (int_fast32_t i = bitCount_.size () - 1; 0 <= i; --i) {
+        for (int_fast32_t i = static_cast<int_fast32_t> (bitCount_.size ()) - 1; 0 <= i; --i) {
             uint_fast64_t v = bitCount_[i];
             p [0] = static_cast<unsigned char> (v >> 56u);
             p [1] = static_cast<unsigned char> (v >> 48u);
