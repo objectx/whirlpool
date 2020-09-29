@@ -7,6 +7,8 @@ project (whirlpool
 
 list (INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_BINARY_DIR})
 
+include (${CMAKE_BINARY_DIR}/conan_paths.cmake)
+
 function (setvar_default var_)
     if (NOT DEFINED ${var_})
         set (${var_} ${ARGN} PARENT_SCOPE)
@@ -18,8 +20,6 @@ setvar_default (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 setvar_default (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 enable_testing ()
-
-include (cotire OPTIONAL)
 
 add_library (${PROJECT_NAME} STATIC)
 target_include_directories (${PROJECT_NAME}

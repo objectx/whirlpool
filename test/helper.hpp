@@ -17,9 +17,8 @@ namespace fmt {
 
             template <typename FormatContext>
                 auto format (const Whirlpool::digest_t &digest, FormatContext &ctx) {
-                    auto        it = ctx.begin ();
                     for (size_t i  = 0 ; i < 2 ; ++i) {
-                        it = fmt::format_to ( it
+                        fmt::format_to (ctx.out()
                                             , "{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}"
                                             , digest[32 * i + 0]
                                             , digest[32 * i + 1]
@@ -29,7 +28,7 @@ namespace fmt {
                                             , digest[32 * i + 5]
                                             , digest[32 * i + 6]
                                             , digest[32 * i + 7]);
-                        it = fmt::format_to ( it
+                        fmt::format_to (ctx.out()
                                             , " {:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}"
                                             , digest[32 * i +  8]
                                             , digest[32 * i +  9]
@@ -39,7 +38,7 @@ namespace fmt {
                                             , digest[32 * i + 13]
                                             , digest[32 * i + 14]
                                             , digest[32 * i + 15]);
-                        it = fmt::format_to ( it
+                        fmt::format_to (ctx.out()
                                             , " {:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}"
                                             , digest[32 * i + 16]
                                             , digest[32 * i + 17]
@@ -49,7 +48,7 @@ namespace fmt {
                                             , digest[32 * i + 21]
                                             , digest[32 * i + 22]
                                             , digest[32 * i + 23]);
-                        it = fmt::format_to (it
+                        fmt::format_to (ctx.out()
                                              , " {:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}\n"
                                              , digest[32 * i + 24]
                                              , digest[32 * i + 25]
@@ -60,7 +59,7 @@ namespace fmt {
                                              , digest[32 * i + 30]
                                              , digest[32 * i + 31]);
                     }
-                    return it;
+                    return ctx.out();
                 }
         };
 } // namespace fmt
