@@ -16,23 +16,23 @@ static const size_t MAX_ROUND = 10;
 
 namespace Whirlpool {
 
-    Generator &Generator::Update (unsigned char value) {
+    Generator &Generator::update (unsigned char value) {
         if (finalized_) {
-            throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
+            throw std::runtime_error { "Whirlpool::Generator::update: Already finalized." } ;
         }
         if (remain_ <= 0) {
-            Flush ();
+            flush ();
         }
         uint8_t *   q = &buffer_ [sizeof (buffer_) - remain_];
         *q++ = value;
         --remain_;
-        AddBitCount (8);
+        add_bit_count (8);
         return *this;
     }
 
-    Generator &Generator::Update (const void *data, size_t size) {
+    Generator &Generator::update (const void *data, size_t size) {
         if (finalized_) {
-            throw std::runtime_error { "Whirlpool::Generator::Update: Already finalized." } ;
+            throw std::runtime_error { "Whirlpool::Generator::update: Already finalized." } ;
         }
         auto p     = static_cast<const uint8_t *> (data);
         auto p_end = p + size;
@@ -41,13 +41,13 @@ namespace Whirlpool {
 
         while (p < p_end) {
             if (remain_ <= 0) {
-                Flush ();
+                flush ();
                 q = &buffer_ [0];
             }
             *q++ = *p++;
             --remain_;
         }
-        AddBitCount (8 * size);
+        add_bit_count (8 * size);
         return *this;
     }
 
@@ -84,7 +84,7 @@ namespace Whirlpool {
                | (static_cast<uint64_t> (p [7]) <<  0u));
     }
 
-    void        Generator::Flush () {
+    void        Generator::flush () {
         uint_fast64_t K0 = digest_ [0];
         uint_fast64_t K1 = digest_ [1];
         uint_fast64_t K2 = digest_ [2];
@@ -185,7 +185,7 @@ namespace Whirlpool {
         remain_ = sizeof (buffer_);
     }
 
-    void        Generator::AddBitCount (uint64_t value) {
+    void        Generator::add_bit_count (uint64_t value) {
         uint_fast64_t x = bitCount_ [0];
         bitCount_ [0] += value;
         if (bitCount_ [0] < x) {
@@ -199,10 +199,10 @@ namespace Whirlpool {
         }
     }
 
-    digest_t    Generator::Finalize () {
+    digest_t    Generator::finalize () {
         if (!finalized_) {
             if (remain_ <= 0) {
-                Flush ();
+                flush ();
             }
             uint8_t *q = &buffer_ [sizeof (buffer_) - remain_];
             assert (static_cast<size_t> (buffer_.data() + sizeof (buffer_) - q) == remain_);
@@ -210,11 +210,11 @@ namespace Whirlpool {
             --remain_;
             ::memset (q, 0, remain_);
             if (remain_ < sizeof (bitCount_)) {
-                Flush ();
+                flush ();
                 buffer_.fill (0) ;
             }
-            EmbedBitCount ();
-            Flush ();
+            embed_bit_count ();
+            flush ();
             finalized_ = true;
         }
         digest_t    result ;
@@ -232,7 +232,7 @@ namespace Whirlpool {
         return result ;
     }
 
-    void        Generator::EmbedBitCount () {
+    void        Generator::embed_bit_count () {
         assert (sizeof (bitCount_) <= remain_);
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
         for (int_fast32_t i = static_cast<int_fast32_t> (bitCount_.size ()) - 1; 0 <= i; --i) {

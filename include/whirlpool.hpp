@@ -24,7 +24,7 @@ namespace Whirlpool {
     public:
         /** The default constructor.  */
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-        Generator () { Clear (); }
+        Generator () { clear (); }
 
         /**
          * The copy constructor.
@@ -45,7 +45,7 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator &Assign (const Generator &src) { return this->operator= (src); }
+        Generator &assign (const Generator &src) { return this->operator= (src); }
 
         Generator &operator= (const Generator &src) {
             if (this != &src) {
@@ -63,7 +63,7 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator &Clear () {
+        Generator &clear () {
             finalized_ = false;
             remain_    = sizeof (buffer_);
             digest_.fill (0);
@@ -78,7 +78,7 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator &Update (unsigned char value);
+        Generator &update (unsigned char value);
 
         /**
          * Updates state with the sequence of DATA [0..SIZE - 1].
@@ -88,25 +88,25 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator &Update (const void *data, size_t size);
+        Generator &update (const void *data, size_t size);
 
         /**
          * Finalizes internal state and computes digest.
          *
          * @return Computed digest
          */
-        digest_t Finalize ();
+        digest_t finalize ();
 
     private:
-        void Flush ();
+        void flush ();
 
         /**
          * Increments bitCount_ by VALUE.
          *
          * @param value  Value for increment
          */
-        void AddBitCount (uint64_t value);
-        void EmbedBitCount ();
+        void add_bit_count (uint64_t value);
+        void embed_bit_count ();
     };
 
     /**
@@ -117,5 +117,5 @@ namespace Whirlpool {
      *
      * @return Computed digest
      */
-    inline digest_t ComputeDigest (const void *data, size_t size) { return Generator ().Update (data, size).Finalize (); }
+    inline digest_t ComputeDigest (const void *data, size_t size) { return Generator ().update (data, size).finalize (); }
 }  // namespace Whirlpool
