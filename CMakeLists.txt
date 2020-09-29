@@ -5,9 +5,9 @@ project (whirlpool
          VERSION 1.0.0
          LANGUAGES CXX)
 
-list (INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_BINARY_DIR})
+option (WHIRLPOOL_ENABLE_TESTS "Enable tests" NO)
 
-include (${CMAKE_BINARY_DIR}/conan_paths.cmake)
+list (INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_BINARY_DIR})
 
 function (setvar_default var_)
     if (NOT DEFINED ${var_})
@@ -19,7 +19,11 @@ setvar_default (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 setvar_default (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 setvar_default (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-enable_testing ()
+if (WHIRLPOOL_ENABLE_TESTS)
+    include (${CMAKE_BINARY_DIR}/conan_paths.cmake)
+
+    enable_testing ()
+endif ()
 
 add_library (${PROJECT_NAME} STATIC)
 target_include_directories (${PROJECT_NAME}
@@ -27,4 +31,6 @@ target_include_directories (${PROJECT_NAME}
                                    $<INSTALL_INTERFACE:include>)
 
 add_subdirectory (src)
-add_subdirectory (test)
+if (WHIRLPOOL_ENABLE_TESTS)
+    add_subdirectory (test)
+endif ()
