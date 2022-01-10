@@ -16,11 +16,11 @@ namespace Whirlpool {
     /** The whirlpool message digest generator.  */
     class Generator {
     private:
-        std::array<uint64_t, 8> digest_;
-        bool                    finalized_;
-        int32_t                 remain_;
-        std::array<uint8_t, 64> buffer_;
-        std::array<uint64_t, 4> bitCount_; // 256bits counter.
+        std::array<uint64_t, 8> digest_ {};
+        bool                    finalized_ {false};
+        int32_t                 remain_ {sizeof (buffer_)};
+        std::array<uint8_t, 64> buffer_ {};
+        std::array<uint64_t, 4> bitCount_ {}; // 256bits counter.
     public:
         /** The default constructor.  */
         Generator () { Clear (); }
@@ -33,9 +33,7 @@ namespace Whirlpool {
         Generator (const Generator& src)
                 : finalized_ {src.finalized_}
                 , remain_ {src.remain_} {
-            digest_.fill (0);
-            buffer_.fill (0);
-            bitCount_.fill (0);
+            // NO-OP
         }
 
         /**
