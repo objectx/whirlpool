@@ -3,16 +3,22 @@
  *
  * Copyright (c) Masashi Fujita
  */
-#include <assert.h>
+#include <cassert>
 #include <stdexcept>
 #include "whirlpool.hpp"
+
+#ifndef __has_builtin
+#define __has_builtin(X_)   0
+#endif
 
 /** Non-zero means using full-size (x8 in size) table for computation.  */
 #define WHIRLPOOL_USE_FULL_TABLE        0
 
+namespace {
 #include "whirlpool.inc"
 
-static const size_t MAX_ROUND = 10;
+const size_t MAX_ROUND = 10;
+}
 
 namespace Whirlpool {
 
@@ -51,19 +57,21 @@ namespace Whirlpool {
         return *this;
     }
 
-#if defined (WHIRLPOOL_USE_FULL_TABLE) && (WHIRLPOOL_USE_FULL_TABLE != 0)
+#if WHIRLPOOL_USE_FULL_TABLE
     static inline uint64_t      CIR (size_t n, uint64_t value) {
         return CIR_ [256 * n + (static_cast<int> (value) & 0xFF)] ;
     }
 #else
 
     static inline uint64_t RotateRight (uint64_t value, size_t count) {
-#if defined (_MSC_VER) && (1300 <= _MSC_VER)
-        return _rotr64 (value, static_cast<int> (count)) ;
-#else
         if (count == 0) {
             return value;
         }
+#if 1300 <= _MSC_VER
+        return _rotr64 (value, static_cast<int> (count)) ;
+#elif __has_builtin (__builtin_rotateright64)
+        return __builtin_rotateright64 (value, static_cast<int>(count));
+#else
         return ((value >> count) | (value << (64 - count)));
 #endif
     }
@@ -76,7 +84,7 @@ namespace Whirlpool {
 #endif
 
     static inline uint64_t ToUInt64 (const void *data) {
-        const unsigned char *p = static_cast<const unsigned char *> (data);
+        auto const *p = static_cast<const unsigned char *> (data);
         return ( (static_cast<uint64_t> (p [0]) << 56u)
                | (static_cast<uint64_t> (p [1]) << 48u)
                | (static_cast<uint64_t> (p [2]) << 40u)
@@ -238,7 +246,7 @@ namespace Whirlpool {
     void        Generator::EmbedBitCount () {
         assert (sizeof (bitCount_) <= remain_);
         unsigned char *p = &buffer_[sizeof (buffer_) - sizeof (bitCount_)];
-        for (int_fast32_t i = bitCount_.size () - 1; 0 <= i; --i) {
+        for (int_fast32_t i = static_cast<int_fast32_t> (bitCount_.size ()) - 1; 0 <= i; --i) {
             uint_fast64_t v = bitCount_[i];
             p [0] = static_cast<unsigned char> (v >> 56u);
             p [1] = static_cast<unsigned char> (v >> 48u);
