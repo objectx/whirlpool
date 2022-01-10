@@ -105,16 +105,16 @@ def generate (output):
 
     tmpl = """/* --- DO NOT EDIT --- */
 #pragma once
-#include <stdint.h>
-static const uint64_t\tRC_ [11] = {
+#include <cstdint>
+const uint64_t\tRC_ [11] = {
 ${rc_table}
 } ;
-#if defined (${cpp_symbol}) && (${cpp_symbol} != 0)
-static const uint64_t\tCIR_ [8 * 256] = {
+#if ${cpp_symbol}
+const uint64_t\tCIR_ [8 * 256] = {
 ${full_table}
 } ;\t/* end of CIR_ [8 * 256] */
 #else
-static const uint64_t\tCIR_ [256] = {
+const uint64_t\tCIR_ [256] = {
 ${small_table}
 } ;\t/* end of CIR_ [256] */
 #endif\t/* ${cpp_symbol} */
