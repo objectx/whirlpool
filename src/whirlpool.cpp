@@ -61,6 +61,9 @@ namespace Whirlpool {
 #if defined (_MSC_VER) && (1300 <= _MSC_VER)
         return _rotr64 (value, static_cast<int> (count)) ;
 #else
+        if (count == 0) {
+            return value;
+        }
         return ((value >> count) | (value << (64 - count)));
 #endif
     }
