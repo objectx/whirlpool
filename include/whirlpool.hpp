@@ -20,46 +20,28 @@ namespace Whirlpool {
         bool                    finalized_ {false};
         int32_t                 remain_ {sizeof (buffer_)};
         std::array<uint8_t, 64> buffer_ {};
-        std::array<uint64_t, 4> bitCount_ {}; // 256bits counter.
+        std::array<uint64_t, 4> bitCount_ {};  // 256bits counter.
     public:
         /** The default constructor.  */
-        Generator () { Clear (); }
+        Generator () { clear (); }
 
         /**
          * The copy constructor.
          *
          * @param src    The source to copy
          */
-        Generator (const Generator& src)
-                : finalized_ {src.finalized_}
-                , remain_ {src.remain_} {
+        Generator (const Generator &src) : finalized_ {src.finalized_}, remain_ {src.remain_} {
             // NO-OP
         }
 
-        /**
-         * Assigns SRC's state to self.
-         *
-         * @param src    The source to assign
-         *
-         * @return *this
-         */
-        Generator& Assign (const Generator& src) {
-            finalized_ = src.finalized_;
-            remain_    = src.remain_;
-            digest_    = src.digest_;
-            buffer_    = src.buffer_;
-            bitCount_  = src.bitCount_;
-            return *this;
-        }
-
-        Generator& operator= (const Generator& src) { return Assign (src); }
+        auto operator= (const Generator &src) -> Generator & = default;
 
         /**
          * Clears internal state.
          *
          * @return *this
          */
-        Generator& Clear () {
+        auto clear () -> Generator & {
             finalized_ = false;
             remain_    = sizeof (buffer_);
             digest_.fill (0);
@@ -74,7 +56,7 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator& Update (unsigned char value);
+        auto update (unsigned char value) -> Generator &;
 
         /**
          * Updates state with the sequence of DATA [0..SIZE - 1].
@@ -84,25 +66,25 @@ namespace Whirlpool {
          *
          * @return *this
          */
-        Generator& Update (const void* data, size_t size);
+        auto update (const void *data, size_t size) -> Generator &;
 
         /**
          * Finalizes internal state and computes digest.
          *
          * @return Computed digest
          */
-        digest_t Finalize ();
+        auto finalize () -> digest_t;
 
     private:
-        void Flush ();
+        void flush ();
 
         /**
          * Increments bitCount_ by VALUE.
          *
          * @param value  Value for increment
          */
-        void AddBitCount (uint64_t value);
-        void EmbedBitCount ();
+        void add_bit_count (uint64_t value);
+        void embed_bit_count ();
     };
 
     /**
@@ -113,5 +95,7 @@ namespace Whirlpool {
      *
      * @return Computed digest
      */
-    inline digest_t ComputeDigest (const void* data, size_t size) { return Generator ().Update (data, size).Finalize (); }
-} // namespace Whirlpool
+    inline auto compute_digest (const void *data, size_t size) -> digest_t {
+        return Generator ().update (data, size).finalize ();
+    }
+}  // namespace Whirlpool

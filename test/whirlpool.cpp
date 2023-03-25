@@ -10,7 +10,7 @@ TEST_CASE ("Test Whirlpool", "[whirlpool]") {
     using namespace fmt::literals;
 
     auto digest = [] (const char *s) -> std::string {
-        return normalize (fmt::format ("{}", Whirlpool::ComputeDigest (s, strlen (s))));
+        return normalize (fmt::format ("{}", Whirlpool::compute_digest (s, strlen (s))));
     };
 
     SECTION ("(empty string)") {

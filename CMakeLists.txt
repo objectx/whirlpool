@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.20)
 
 project (whirlpool
-         VERSION 1.0.0
+         VERSION 2.0.0
          LANGUAGES CXX)
 
 option (WHIRLPOOL_ENABLE_TESTS "Enable tests" YES)
