@@ -11,15 +11,16 @@ using namespace std::string_view_literals;
 
 using Catch::Matchers::Equals;
 
-TEST_CASE ("Test Whirlpool", "[whirlpool]") {
-    using namespace fmt::literals;
-
-    auto digest = [] (std::string_view s) -> std::string {
-        using std::size;
+namespace {
+    [[nodiscard]]
+    auto digest (std::string_view s) -> std::string {
         using std::data;
-        return normalize (fmt::format ("{}", Whirlpool::compute_digest (data(s), size(s))));
-    };
+        using std::size;
+        return normalize (fmt::format ("{}", Whirlpool::compute_digest (data (s), size (s))));
+    }
+}  // namespace
 
+TEST_CASE ("Test Whirlpool", "[whirlpool]") {
     SECTION ("(empty string)") {
         auto const &actual   = digest (""sv);
         auto const &expected = normalize (
