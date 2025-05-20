@@ -15,7 +15,6 @@ namespace Whirlpool {
 
     /** The whirlpool message digest generator.  */
     class Generator {
-    private:
         std::array<uint64_t, 8> digest_ {};
         bool                    finalized_ {false};
         int32_t                 remain_ {sizeof (buffer_)};

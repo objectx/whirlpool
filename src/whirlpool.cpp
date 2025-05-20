@@ -11,13 +11,13 @@
 #    define __has_builtin(X_) 0
 #endif
 
-/** Non-zero means using full-size (x8 in size) table for computation.  */
+/** Non-zero means using a full-size (x8 in size) table for computation.  */
 #define WHIRLPOOL_USE_FULL_TABLE 0
 
 namespace {
 #include "whirlpool.inc"
 
-    const size_t MAX_ROUND = 10;
+    constexpr size_t MAX_ROUND = 10;
 }  // namespace
 
 namespace Whirlpool {
