@@ -5,6 +5,7 @@
  */
 #include "whirlpool.hpp"
 #include <cassert>
+#include <cstring>
 #include <stdexcept>
 
 #ifndef __has_builtin
