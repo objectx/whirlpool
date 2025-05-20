@@ -18,6 +18,31 @@ namespace {
 #include "whirlpool.inc"
 
     constexpr size_t MAX_ROUND = 10;
+
+#if WHIRLPOOL_USE_FULL_TABLE
+    uint64_t CIR (size_t n, uint64_t value) noexcept {
+        return CIR_ [256 * n + (static_cast<int> (value) & 0xFF)];
+    }
+#else
+
+    auto RotateRight (uint64_t value, size_t count) noexcept -> uint64_t {
+        if (count == 0) {
+            return value;
+        }
+#    if 1300 <= _MSC_VER
+        return _rotr64 (value, static_cast<int> (count));
+#    elif __has_builtin(__builtin_rotateright64)
+        return __builtin_rotateright64 (value, static_cast<int> (count));
+#    else
+        return ((value >> count) | (value << (64 - count)));
+#    endif
+    }
+
+    auto CIR (size_t n, uint64_t value) noexcept -> uint64_t {
+        auto const result = CIR_ [static_cast<int> (value) & 0xFFu];
+        return RotateRight (result, 8 * n);
+    }
+#endif
 }  // namespace
 
 namespace Whirlpool {
@@ -57,32 +82,6 @@ namespace Whirlpool {
         return *this;
     }
 
-#if WHIRLPOOL_USE_FULL_TABLE
-    static inline uint64_t CIR (size_t n, uint64_t value) {
-        return CIR_ [256 * n + (static_cast<int> (value) & 0xFF)];
-    }
-#else
-
-    static inline auto RotateRight (uint64_t value, size_t count) -> uint64_t {
-        if (count == 0) {
-            return value;
-        }
-#    if 1300 <= _MSC_VER
-        return _rotr64 (value, static_cast<int> (count));
-#    elif __has_builtin(__builtin_rotateright64)
-        return __builtin_rotateright64 (value, static_cast<int> (count));
-#    else
-        return ((value >> count) | (value << (64 - count)));
-#    endif
-    }
-
-    static inline auto CIR (size_t n, uint64_t value) -> uint64_t {
-        uint64_t result = CIR_ [static_cast<int> (value) & 0xFFu];
-        return RotateRight (result, 8 * n);
-    }
-
-#endif
-
     static inline auto ToUInt64 (const void *data) -> uint64_t {
         auto const *p = static_cast<const unsigned char *> (data);
         return ((static_cast<uint64_t> (p [0]) << 56u) | (static_cast<uint64_t> (p [1]) << 48u) | (static_cast<uint64_t> (p [2]) << 40u) |
@@ -90,7 +89,7 @@ namespace Whirlpool {
                 (static_cast<uint64_t> (p [6]) << 8u) | (static_cast<uint64_t> (p [7]) << 0u));
     }
 
-    void Generator::flush () {
+    void Generator::flush () noexcept {
         uint_fast64_t K0 = digest_ [0];
         uint_fast64_t K1 = digest_ [1];
         uint_fast64_t K2 = digest_ [2];
@@ -100,14 +99,14 @@ namespace Whirlpool {
         uint_fast64_t K6 = digest_ [6];
         uint_fast64_t K7 = digest_ [7];
 
-        uint_fast64_t B0 = ToUInt64 (&buffer_ [8 * 0]);
-        uint_fast64_t B1 = ToUInt64 (&buffer_ [8 * 1]);
-        uint_fast64_t B2 = ToUInt64 (&buffer_ [8 * 2]);
-        uint_fast64_t B3 = ToUInt64 (&buffer_ [8 * 3]);
-        uint_fast64_t B4 = ToUInt64 (&buffer_ [8 * 4]);
-        uint_fast64_t B5 = ToUInt64 (&buffer_ [8 * 5]);
-        uint_fast64_t B6 = ToUInt64 (&buffer_ [8 * 6]);
-        uint_fast64_t B7 = ToUInt64 (&buffer_ [8 * 7]);
+        const uint_fast64_t B0 = ToUInt64 (&buffer_ [8 * 0]);
+        const uint_fast64_t B1 = ToUInt64 (&buffer_ [8 * 1]);
+        const uint_fast64_t B2 = ToUInt64 (&buffer_ [8 * 2]);
+        const uint_fast64_t B3 = ToUInt64 (&buffer_ [8 * 3]);
+        const uint_fast64_t B4 = ToUInt64 (&buffer_ [8 * 4]);
+        const uint_fast64_t B5 = ToUInt64 (&buffer_ [8 * 5]);
+        const uint_fast64_t B6 = ToUInt64 (&buffer_ [8 * 6]);
+        const uint_fast64_t B7 = ToUInt64 (&buffer_ [8 * 7]);
 
         uint_fast64_t S0 = B0 ^ K0;
         uint_fast64_t S1 = B1 ^ K1;
@@ -168,7 +167,7 @@ namespace Whirlpool {
         remain_      = sizeof (buffer_);
     }
 
-    void Generator::add_bit_count (uint64_t value) {
+    void Generator::add_bit_count (uint64_t value) noexcept {
         uint_fast64_t x  = bitCount_ [0];
         bitCount_ [0]   += value;
         if (bitCount_ [0] < x) {
@@ -182,13 +181,13 @@ namespace Whirlpool {
         }
     }
 
-    auto Generator::finalize () -> digest_t {
+    auto Generator::finalize () noexcept -> digest_t {
         if (! finalized_) {
             if (remain_ <= 0) {
                 flush ();
             }
             uint8_t *q = &buffer_ [sizeof (buffer_) - remain_];
-            assert (static_cast<size_t> (buffer_.data() + sizeof (buffer_) - q) == remain_);
+            assert (static_cast<size_t> (buffer_.data () + sizeof (buffer_) - q) == remain_);
             *q++ = 0x80;
             --remain_;
             ::memset (q, 0, remain_);
@@ -202,7 +201,7 @@ namespace Whirlpool {
         }
         digest_t result;
         for (int_fast32_t i = 0; i < 8; ++i) {
-            auto v = digest_ [i];
+            auto const v = digest_ [i];
 
             result [8 * i + 0] = static_cast<uint8_t> (v >> 56u);
             result [8 * i + 1] = static_cast<uint8_t> (v >> 48u);
@@ -216,11 +215,11 @@ namespace Whirlpool {
         return result;
     }
 
-    void Generator::embed_bit_count () {
+    void Generator::embed_bit_count () noexcept {
         assert (sizeof (bitCount_) <= remain_);
         unsigned char *p = &buffer_ [sizeof (buffer_) - sizeof (bitCount_)];
         for (int_fast32_t i = static_cast<int_fast32_t> (bitCount_.size ()) - 1; 0 <= i; --i) {
-            uint_fast64_t v = bitCount_ [i];
+            const uint_fast64_t v = bitCount_ [i];
 
             p [0]  = static_cast<unsigned char> (v >> 56u);
             p [1]  = static_cast<unsigned char> (v >> 48u);

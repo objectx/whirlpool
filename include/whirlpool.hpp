@@ -21,6 +21,7 @@ namespace Whirlpool {
         std::array<uint8_t, 64> buffer_ {};
         std::array<uint64_t, 4> bitCount_ {};  // 256bits counter.
     public:
+        ~Generator () noexcept = default;
         /** The default constructor.  */
         Generator () { clear (); }
 
@@ -29,18 +30,16 @@ namespace Whirlpool {
          *
          * @param src    The source to copy
          */
-        Generator (const Generator &src) : finalized_ {src.finalized_}, remain_ {src.remain_} {
-            // NO-OP
-        }
+        Generator (const Generator &src) noexcept = default;
 
-        auto operator= (const Generator &src) -> Generator & = default;
+        auto operator= (const Generator &src) noexcept -> Generator & = default;
 
         /**
          * Clears internal state.
          *
          * @return *this
          */
-        auto clear () -> Generator & {
+        auto clear () noexcept -> Generator & {
             finalized_ = false;
             remain_    = sizeof (buffer_);
             digest_.fill (0);
@@ -72,18 +71,18 @@ namespace Whirlpool {
          *
          * @return Computed digest
          */
-        auto finalize () -> digest_t;
+        auto finalize () noexcept -> digest_t;
 
     private:
-        void flush ();
+        void flush () noexcept;
 
         /**
          * Increments bitCount_ by VALUE.
          *
          * @param value  Value for increment
          */
-        void add_bit_count (uint64_t value);
-        void embed_bit_count ();
+        void add_bit_count (uint64_t value) noexcept;
+        void embed_bit_count () noexcept;
     };
 
     /**
@@ -94,6 +93,7 @@ namespace Whirlpool {
      *
      * @return Computed digest
      */
+    [[nodiscard]]
     inline auto compute_digest (const void *data, size_t size) -> digest_t {
         return Generator ().update (data, size).finalize ();
     }
